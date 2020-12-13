@@ -1,0 +1,54 @@
+{
+    "name": "@flowsquad/flowcov-viewer",
+    "version": "1.0.0",
+    "description": "Contains the viewer for the flowcov.io frontend",
+    "author": "FlowSquad GmbH <info@flowsquad.io>",
+    "homepage": ".",
+    "private": false,
+    "scripts": {
+        "start": "cross-env BROWSER=none react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "lint": "npx eslint src --ext .js,.jsx,.ts,.tsx"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.11.2",
+        "@material-ui/icons": "^4.11.2",
+        "@material-ui/lab": "^4.0.0-alpha.57",
+        "bpmn-js": "^7.5.0",
+        "clsx": "^1.1.1",
+        "jquery": "^3.5.1",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1"
+    },
+    "devDependencies": {
+        "@types/jquery": "^3.5.5",
+        "@types/react": "^17.0.0",
+        "@types/react-dom": "^17.0.0",
+        "@typescript-eslint/eslint-plugin": "^4.9.1",
+        "@typescript-eslint/parser": "^4.9.1",
+        "cross-env": "^7.0.3",
+        "eslint": "^7.15.0",
+        "eslint-config-airbnb-typescript": "^12.0.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^4.2.0",
+        "react-scripts": "^4.0.1",
+        "typescript": "^4.1.3"
+    }
+}
