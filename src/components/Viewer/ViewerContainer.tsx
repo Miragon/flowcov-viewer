@@ -2,8 +2,6 @@ import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import React, { useEffect, useMemo, useState } from "react";
-import { Model, Suite } from "../../api/api";
-import reportJson from "../../data/report.json";
 import { parseSuites } from "../../util/ParsingUtils";
 import CoverageViewer from "./CoverageViewer";
 import RunSummary from "./RunSummary";
@@ -95,8 +93,8 @@ const ViewerContainer: React.FC = () => {
     const [selectedRunId, setSelectedRunId] = useState<string | undefined>(undefined);
 
     const parsedSuites = useMemo(
-        () => parseSuites(reportJson.suites as Suite[], reportJson.models as Model[]),
-        [reportJson]
+        () => parseSuites(window.COVERAGE_DATA.suites, window.COVERAGE_DATA.models),
+        [window.COVERAGE_DATA]
     );
 
     const selectedSuite = useMemo(
@@ -131,7 +129,7 @@ const ViewerContainer: React.FC = () => {
             <h1 className={classes.title}>Test Coverage Report</h1>
 
             <span className={classes.subtitle}>
-                {`${reportJson.suites.length} Suites, ${reportJson.models.length} Models processed.`}
+                {`${window.COVERAGE_DATA.suites.length} Suites, ${window.COVERAGE_DATA.models.length} Models processed.`}
             </span>
 
             {selectedSuite && (
