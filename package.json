@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Contains the viewer for the flowcov.io frontend",
     "author": "FlowSquad GmbH <info@flowsquad.io>",
-    "homepage": ".",
+    "homepage": "..",
     "private": false,
     "scripts": {
         "start": "cross-env BROWSER=none react-scripts start",
