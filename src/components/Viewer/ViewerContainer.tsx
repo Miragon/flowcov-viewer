@@ -82,6 +82,9 @@ const useStyles = makeStyles(() => ({
         marginTop: "1rem",
         marginBottom: "1rem",
         fontWeight: "bold"
+    },
+    paper: {
+        backgroundColor: "white"
     }
 }));
 
@@ -148,6 +151,7 @@ const ViewerContainer: React.FC = () => {
                             label="Test Suite"
                             value={selectedSuiteId}
                             labelId="test-suite"
+                            MenuProps={{ classes: { paper: classes.paper } }}
                             onChange={e => setSelectedSuiteId(e.target.value as string)}>
 
                             {parsedSuites.map(suite => (
@@ -178,6 +182,7 @@ const ViewerContainer: React.FC = () => {
                                     label="Model"
                                     value={selectedModelKey}
                                     labelId="model"
+                                    MenuProps={{ classes: { paper: classes.paper } }}
                                     onChange={e => setSelectedModelKey(e.target.value as string)}>
 
                                     {selectedSuite.models.map(model => (
@@ -205,6 +210,7 @@ const ViewerContainer: React.FC = () => {
                                     label="Run"
                                     value={selectedRunId === undefined ? "" : selectedRunId}
                                     labelId="run"
+                                    MenuProps={{ classes: { paper: classes.paper } }}
                                     onChange={e => setSelectedRunId(e.target.value === "" ? undefined : e.target.value as string)}>
 
                                     <MenuItem value=""><em>None</em></MenuItem>
