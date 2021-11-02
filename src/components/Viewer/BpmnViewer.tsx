@@ -3,6 +3,7 @@ import Viewer from "bpmn-js/lib/NavigatedViewer";
 import clsx from "clsx";
 import $ from "jquery";
 import React, { useEffect, useMemo } from "react";
+import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda.json";
 
 export interface BpmnViewerData {
     highlightSequenceFlows: string[];
@@ -65,6 +66,44 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+// @see
+// https://github.com/bpmn-io/camunda-transaction-boundaries/blob/master/lib/TransactionBoundaries.js#L63
+const getTransactionBoundaries = (element: any): {
+    before: boolean;
+    after: boolean;
+} => {
+    const { businessObject, loopCharacteristics } = element;
+    const eventDefinitions = businessObject.eventDefinitions || [];
+    const eventDefinitionType = eventDefinitions.length && eventDefinitions[0].$type;
+
+    const isWaitStateTask = element.type === "bpmn:ReceiveTask"
+        || element.type === "bpmn:UserTask"
+        || (element.type === "bpmn:ServiceTask" && businessObject.type === "external");
+
+    // TODO: Parallel/Inclusive Gateway with multiple incoming sequence flows
+    const isWaitStateGateway = false;
+
+    const isWaitStateEvent = element.type === "bpmn:IntermediateCatchEvent" && (
+        eventDefinitionType === "bpmn:MessageEventDefinition"
+        || eventDefinitionType === "bpmn:TimerEventDefinition"
+        || eventDefinitionType === "bpmn:SignalEventDefinition"
+        || eventDefinitionType === "bpmn:ConditionalEventDefinition"
+    );
+
+    const isAsyncAfter = businessObject.asyncAfter
+        || (loopCharacteristics && loopCharacteristics.asyncAfter);
+
+    const isAsyncBefore = businessObject.asyncBefore
+        || (loopCharacteristics && loopCharacteristics.asyncBefore);
+
+    const boundariesBefore = isWaitStateTask
+        || isWaitStateEvent
+        || isWaitStateGateway
+        || isAsyncBefore;
+
+    return { before: !!boundariesBefore, after: !!isAsyncAfter };
+};
+
 let viewer: Viewer | undefined;
 
 const BpmnViewer: React.FC<Props> = props => {
@@ -99,7 +138,10 @@ const BpmnViewer: React.FC<Props> = props => {
 
     useEffect(() => {
         viewer = new Viewer({
-            container: "#bpmn-canvas"
+            container: "#bpmn-canvas",
+            moddleExtensions: {
+                camunda: camundaModdleDescriptor
+            }
         });
         viewer.get("zoomScroll").toggle(false);
     }, []);
@@ -134,25 +176,20 @@ const BpmnViewer: React.FC<Props> = props => {
                     const element = elements[i];
                     if (element.type !== "label") {
                         if (props.showTransactionBoundaries) {
-                            // Transaction Boundaries
-                            if (element.businessObject.$attrs["camunda:asyncBefore"]
-                                || element.businessObject.$attrs["camunda:async"]
-                                || element.type === "bpmn:ReceiveTask"
-                                || element.type === "bpmn:UserTask"
-                                || element.type === "bpmn:IntermediateCatchEvent"
-                            ) {
+                            const transactionBoundaries = getTransactionBoundaries(element);
+                            if (transactionBoundaries.before) {
                                 overlays.add(element.id, "note", {
                                     position: {
                                         bottom: (element.type === "bpmn:IntermediateCatchEvent" ? 34 : 64),
-                                        left: -4
+                                        left: (element.type === "bpmn:IntermediateCatchEvent" ? -3 : -5)
                                     },
                                     html: `<div class='${element.type === "bpmn:IntermediateCatchEvent" ? classes.transactionBoundarySmall : classes.transactionBoundary}' />`
                                 });
                             }
-                            if (element.businessObject.$attrs["camunda:asyncAfter"]) {
+                            if (transactionBoundaries.after) {
                                 overlays.add(element.id, "note", {
                                     position: {
-                                        bottom: 19,
+                                        bottom: 64,
                                         right: -1
                                     },
                                     html: `<div class='${classes.transactionBoundary}' />`
