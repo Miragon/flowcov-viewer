@@ -13,15 +13,15 @@ updates:
       prefix: fix
       prefix-development: chore
       include: scope
-   # Fetch and update latest `npm` packages
-   - package-ecosystem: npm
+  # Fetch and update latest `npm` packages
+  - package-ecosystem: npm
     directory: "/"
+    schedule:
+      interval: weekly
+      time: "05:00"
     target-branch: "master"
     labels:
       - "Technical Dept"
-    schedule:
-      interval: daily
-      time: "05:00"
     commit-message:
       prefix: fix
       prefix-development: chore
