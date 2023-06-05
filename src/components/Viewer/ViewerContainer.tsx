@@ -235,6 +235,7 @@ const ViewerContainer: React.FC = () => {
                         {parsedSuites.map(suite => (
                             <div
                                 onClick={() => setSelectedSuiteId(suite.id)}
+                                key={suite.id}
                                 className={clsx(
                                     classes.item,
                                     selectedSuiteId === suite.id && classes.itemSelected
