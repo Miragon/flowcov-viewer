@@ -157,7 +157,7 @@ const RunSummary: React.FC<Props> = props => {
                     )}
 
                     {props.selectedSuite.models.map(model => (
-                        <>
+                        <React.Fragment key={model.key}>
                             <RunSummaryRow
                                 type="model"
                                 selected={props.selectedModel === model}
@@ -173,7 +173,7 @@ const RunSummary: React.FC<Props> = props => {
                                     model={run}
                                     onClick={() => props.onRunSelected(run)} />
                             ))}
-                        </>
+                        </React.Fragment>
                     ))}
 
                     <tr className={classes.spacingRow} key="spacing2">
