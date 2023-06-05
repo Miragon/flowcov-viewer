@@ -199,14 +199,14 @@ const BpmnViewer: React.FC<Props> = props => {
                         }
 
                         if (props.showExpressions) {
-                            if (element.businessObject.extensionElements
-                                && element.businessObject.extensionElements.values) {
+                            if (element.businessObject.extensionElements?.values) {
                                 const extensionElements: ModdleElement[] = element
                                     .businessObject.extensionElements.values;
                                 extensionElements.forEach(extensionElement => {
                                     const { $type, event, fields } = extensionElement;
 
-                                    if ($type === "camunda:ExecutionListener" && (event === "end" || event === "start") && fields) {
+                                    const executionListener = "camunda:executionListener";
+                                    if ($type.toLowerCase() === executionListener.toLowerCase() && (event === "end" || event === "start") && fields) {
                                         fields.forEach((field: { expression: any; }) => {
                                             const position = {
                                                 bottom: 0,
