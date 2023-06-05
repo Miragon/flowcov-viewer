@@ -4,6 +4,7 @@ import clsx from "clsx";
 import $ from "jquery";
 import React, { useEffect, useMemo } from "react";
 import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda.json";
+import { ModdleElement } from "bpmn-js/lib/model/Types";
 
 export interface BpmnViewerData {
     highlightSequenceFlows: string[];
@@ -198,31 +199,26 @@ const BpmnViewer: React.FC<Props> = props => {
                         }
 
                         if (props.showExpressions) {
-                            if (element.businessObject.extensionElements) {
-                                const extensionElements = element
+                            if (element.businessObject.extensionElements?.values) {
+                                const extensionElements: ModdleElement[] = element
                                     .businessObject.extensionElements.values;
-                                for (let j = 0; j < extensionElements.length; j++) {
-                                    if (extensionElements[j].$type === "camunda:executionListener") {
-                                        if (extensionElements[j].event === "end") {
-                                            overlays.add(element.id, "note", {
-                                                position: {
-                                                    bottom: 0,
-                                                    right: 0
-                                                },
-                                                html: `<div class='${classes.executionListener}'>${extensionElements[j].expression}</div>`
-                                            });
-                                        }
-                                        if (extensionElements[j].event === "start") {
-                                            overlays.add(element.id, "note", {
-                                                position: {
-                                                    bottom: 0,
-                                                    left: 0
-                                                },
-                                                html: `<div class='${classes.executionListener}'>${extensionElements[j].expression}</div>`
-                                            });
-                                        }
+                                extensionElements.forEach(extensionElement => {
+                                    const { $type, event, fields } = extensionElement;
+
+                                    const executionListener = "camunda:executionListener";
+                                    if ($type.toLowerCase() === executionListener.toLowerCase() && (event === "end" || event === "start") && fields) {
+                                        fields.forEach((field: { expression: any; }) => {
+                                            const position = {
+                                                bottom: 0,
+                                                [event === "end" ? "right" : "left"]: 0
+                                            };
+
+                                            const html = `<div class='${classes.executionListener}'>${field.expression}</div>`;
+
+                                            overlays.add(element.id, "note", { position, html });
+                                        });
                                     }
-                                }
+                                });
                             }
 
                             if (element.type === "bpmn:SequenceFlow"

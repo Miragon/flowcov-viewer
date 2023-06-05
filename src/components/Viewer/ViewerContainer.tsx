@@ -235,6 +235,7 @@ const ViewerContainer: React.FC = () => {
                         {parsedSuites.map(suite => (
                             <div
                                 onClick={() => setSelectedSuiteId(suite.id)}
+                                key={suite.id}
                                 className={clsx(
                                     classes.item,
                                     selectedSuiteId === suite.id && classes.itemSelected
@@ -260,6 +261,7 @@ const ViewerContainer: React.FC = () => {
                         {selectedSuite.models.map(model => (
                             <div
                                 onClick={() => setSelectedModelKey(model.key)}
+                                key={model.key}
                                 className={clsx(
                                     classes.item,
                                     selectedModelKey === model.key && classes.itemSelected
@@ -288,6 +290,7 @@ const ViewerContainer: React.FC = () => {
                         {selectedModel.runs.map(run => (
                             <div
                                 onClick={() => setSelectedRunId(run.id)}
+                                key={run.id}
                                 className={clsx(
                                     classes.item,
                                     selectedRunId === run.id && classes.itemSelected
